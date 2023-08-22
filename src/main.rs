@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 #[derive(Debug)]
+#[allow(dead_code)]
 struct Todo {
     id: usize,
     content: String,
