@@ -45,7 +45,7 @@ fn main() {
                             }
                         },
                         None => {
-                            println!("Error: missing key id")
+                            println!("Error: missing key id");
                         }
                     }
                 }
@@ -60,7 +60,7 @@ fn main() {
                             }
                         },
                         None => {
-                            println!("Error: missing key id")
+                            println!("Error: missing key id");
                         }
                     }
                 }
