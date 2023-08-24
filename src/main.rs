@@ -34,6 +34,36 @@ fn main() {
                         next_id += 1;
                     }
                 }
+                "GET" => {
+                    match parts.next() {
+                        Some(keystr) => {
+                            let key = keystr.parse::<usize>().unwrap_or(0);
+                            if let Some(value) = todos.get(&key) {
+                                println!("{:?}", value);
+                            } else {
+                                println!("Error: {} not found", key);
+                            }
+                        },
+                        None => {
+                            println!("Error: missing key id")
+                        }
+                    }
+                }
+                "DEL" => {
+                    match parts.next() {
+                        Some(keystr) => {
+                            let key = keystr.parse::<usize>().unwrap_or(0);
+                            if let Some(_) = todos.remove(&key) {
+                                println!("Delete {} success", key);
+                            } else {
+                                println!("Error: {} not found", key);
+                            }
+                        },
+                        None => {
+                            println!("Error: missing key id")
+                        }
+                    }
+                }
                 _ => {}
             }
          }
