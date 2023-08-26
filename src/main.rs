@@ -21,11 +21,11 @@ fn main() {
     loop {
         let mut input = String::new();
         std::io::stdin().read_line(&mut input).unwrap();
-
         let cmd = input.trim();
         let mut parts = cmd.split_whitespace();
         if let Some(cmd) = parts.next() {
-            match cmd {
+            let upper_cmd = cmd.to_uppercase();
+            match upper_cmd.as_str() {
                 "LIST" => {
                     println!("{:?}", todos);
                 }
@@ -40,33 +40,49 @@ fn main() {
                         next_id += 1;
                     }
                 }
-                "GET" => match parts.next() {
-                    Some(keystr) => {
+                "GET" => {
+                    if let Some(keystr) = parts.next() {
                         let key = keystr.parse::<usize>().unwrap_or(0);
                         if let Some(value) = todos.get(&key) {
                             println!("{:?}", value);
                         } else {
                             println!("Error: {} not found", key);
                         }
-                    }
-                    None => {
+                    } else {
                         println!("Error: missing key id");
                     }
                 },
-                "DEL" => match parts.next() {
-                    Some(keystr) => {
+                "DONE" => {
+                    if let Some(keystr) = parts.next() {
+                        let key = keystr.parse::<usize>().unwrap_or(0);
+                        if let Some(value) = todos.get_mut(&key) {
+                            value.done = true;
+                            println!("{:?}", value);
+                        } else {
+                            println!("Error: {} not found", key);
+                        }
+                    } else {
+                        println!("Error: missing key id");
+                    }
+                },
+                "DEL" => {
+                    if let Some(keystr) = parts.next() {
                         let key = keystr.parse::<usize>().unwrap_or(0);
                         if let Some(_) = todos.remove(&key) {
                             println!("Delete {} success", key);
                         } else {
                             println!("Error: {} not found", key);
                         }
-                    }
-                    None => {
+                    } else {
                         println!("Error: missing key id");
                     }
                 },
-                _ => {}
+                "EXIT" => {
+                    break;
+                }
+                _ => {
+                    println!("Error: invalid command");
+                }
             }
         }
     }
