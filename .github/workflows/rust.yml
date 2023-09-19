@@ -66,10 +66,16 @@ jobs:
             tar -czf "${{ matrix.archive-name }}" LICENSE todo
           fi
       - name: Upload archive
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           name: ${{ matrix.archive-name }}
           path: archive/${{ matrix.archive-name }}
+
+      - name: Show files
+        run: |
+          ls ${{ github.workspace }}/artifacts
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
