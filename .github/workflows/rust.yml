@@ -1,4 +1,4 @@
-name: Cross Compile
+name: Linux x64 Compile
 
 on:
   workflow_dispatch:
@@ -7,24 +7,22 @@ jobs:
 
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: [linux, x64]
 
     strategy:
       matrix:
         target:
-          - x86_64-apple-darwin
           - x86_64-unknown-linux-gnu
-          - x86_64-pc-windows-msvc
-          - aarch64-apple-darwin
-          - aarch64-unknown-linux-gnu
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install Rust toolchain
+    - name: Install latest nightly
       uses: actions-rs/toolchain@v1
       with:
-        toolchain: stable
+          toolchain: nightly
+          override: true
+          components: rustfmt, clippy
 
     - name: Install dependencies
       run: |
@@ -37,7 +35,12 @@ jobs:
 
     needs: build
 
-    runs-on: ubuntu-latest
+    runs-on: [linux, x64]
+
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
 
     steps:
 
