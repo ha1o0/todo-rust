@@ -10,10 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install Linux dependencies
       run: |
+        apt-get update
         rustup target add x86_64-unknown-linux-gnu
         sudo apt install gcc-multilib
 
@@ -25,7 +26,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install Windows dependencies
       run: rustup target add x86_64-pc-windows-gnu
@@ -38,7 +39,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install macOS dependencies
       run: rustup target add x86_64-apple-darwin
