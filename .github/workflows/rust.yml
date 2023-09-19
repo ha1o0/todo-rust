@@ -1,66 +1,67 @@
-name: Rust Cross Compile
-
-# on:
-#   workflow_dispatch:
+name: build
 on:
-  push:
-    tags:
-      - '*'
-
+  workflow_dispatch: {}
 jobs:
-
-  build-linux:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Install Linux dependencies
-      run: |
-        sudo apt-get update
-        rustup target add x86_64-unknown-linux-gnu
-        sudo apt install gcc-multilib
-
-    - name: Build for Linux
-      run: cargo build --release --target x86_64-unknown-linux-gnu
-
-  build-windows:
-
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Install Windows dependencies
-      run: rustup target add x86_64-pc-windows-gnu
-
-    - name: Build for Windows
-      run: cargo build --release --target x86_64-pc-windows-gnu
-
-  build-macos:
-
-    runs-on: macos-latest
+  build:
+    name: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build: [linux, macos, windows]
+        include:
+          - build: linux
+            os: ubuntu-latest
+            rust: nightly
+            target: x86_64-unknown-linux-musl
+            archive-name: todo-linux.tar.gz
+          - build: macos
+            os: macos-latest
+            rust: nightly
+            target: x86_64-apple-darwin
+            archive-name: todo-macos.tar.gz
+          - build: windows
+            os: windows-latest
+            rust: nightly-x86_64-msvc
+            target: x86_64-pc-windows-msvc
+            archive-name: todo-windows.7z
+      fail-fast: false
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Install macOS dependencies
-      run: rustup target add x86_64-apple-darwin
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          profile: minimal
+          override: true
+          target: ${{ matrix.target }}
 
-    - name: Build for macOS
-      run: cargo build --release --target x86_64-apple-darwin
+      - name: Build binary
+        run: cargo build --verbose --release --target ${{ matrix.target }}
+        env:
+          RUST_BACKTRACE: 1
 
-  release:
-    needs: [build-linux, build-windows, build-macos]
-    runs-on: ubuntu-latest
+      - name: Strip binary (linux and macos)
+        if: matrix.build == 'linux' || matrix.build == 'macos'
+        run: strip "target/${{ matrix.target }}/release/todo"
 
-    steps:
-    - uses: actions/download-artifact@v2
-      with:
-        path: artifacts
-
-    - name: Create release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: artifacts/*
+      - name: Build archive
+        shell: bash
+        run: |
+          mkdir archive
+          cp LICENSE README.md archive/
+          cd archive
+          if [ "${{ matrix.build }}" = "windows" ]; then
+            cp "../target/${{ matrix.target }}/release/todo.exe" ./
+            7z a "${{ matrix.archive-name }}" LICENSE README.md todo.exe
+          else
+            cp "../target/${{ matrix.target }}/release/todo" ./
+            tar -czf "${{ matrix.archive-name }}" LICENSE README.md todo
+          fi
+      - name: Upload archive
+        uses: actions/upload-artifact@v1
+        with:
+          name: ${{ matrix.archive-name }}
+          path: archive/${{ matrix.archive-name }}
