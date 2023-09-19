@@ -1,6 +1,11 @@
 name: build
+# on:
+#   workflow_dispatch: {}
 on:
-  workflow_dispatch: {}
+  push:
+    tags:
+      - 'v*.*.*'
+
 jobs:
   build:
     name: build
@@ -66,7 +71,10 @@ jobs:
           name: ${{ matrix.archive-name }}
           path: archive/${{ matrix.archive-name }}
 
-      - name: Create release
+      - name: Create Release
         uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tag_name: ${{ github.ref }}
           files: artifacts/*
