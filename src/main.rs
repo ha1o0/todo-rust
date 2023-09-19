@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use todo::life;
 
 #[derive(Debug)]
 #[allow(dead_code)]
@@ -10,6 +11,15 @@ struct Todo {
 
 fn main() {
     println!("Hello, world!");
+    let a = "hello";
+    // let b = "world";
+    {
+        // let c = life::life1(a, b);
+        let d = a;
+        println!("{:?}", &&d);
+        println!("{:?}", d);
+    }
+    println!("{:?}", a);
     let mut todos = HashMap::new();
     let todo1 = Todo {
         id: 1,
