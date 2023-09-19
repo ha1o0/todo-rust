@@ -1,55 +1,61 @@
-name: Linux x64 Compile
+name: Rust Cross Compile
 
 on:
   workflow_dispatch:
 
 jobs:
 
-  build:
+  build-linux:
 
-    runs-on: [linux, x64]
-
-    strategy:
-      matrix:
-        target:
-          - x86_64-unknown-linux-gnu
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
 
-    - name: Install latest nightly
-      uses: actions-rs/toolchain@v1
-      with:
-          toolchain: nightly
-          override: true
-          components: rustfmt, clippy
-
-    - name: Install dependencies
+    - name: Install Linux dependencies
       run: |
-        rustup target add ${{ matrix.target }}
+        rustup target add x86_64-unknown-linux-gnu
+        sudo apt install gcc-multilib
 
-    - name: Build
-      run: cargo build --target ${{ matrix.target }}
+    - name: Build for Linux
+      run: cargo build --release --target x86_64-unknown-linux-gnu
 
-  post-build:
+  build-windows:
 
-    needs: build
-
-    runs-on: [linux, x64]
-
-    strategy:
-      matrix:
-        target:
-          - x86_64-unknown-linux-gnu
+    runs-on: windows-latest
 
     steps:
+    - uses: actions/checkout@v2
 
-    - name: Package artifacts
-      run: |
-        mkdir -p build/${{ matrix.target }}
-        cp target/${{ matrix.target }}/release/mybin build/${{ matrix.target }}
+    - name: Install Windows dependencies
+      run: rustup target add x86_64-pc-windows-gnu
 
-    - uses: actions/upload-artifact@v2
+    - name: Build for Windows
+      run: cargo build --release --target x86_64-pc-windows-gnu
+
+  build-macos:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install macOS dependencies
+      run: rustup target add x86_64-apple-darwin
+
+    - name: Build for macOS
+      run: cargo build --release --target x86_64-apple-darwin
+
+  release:
+    needs: [build-linux, build-windows, build-macos]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/download-artifact@v2
       with:
-       name: artifacts
-       path: build
+        path: artifacts
+
+    - name: Create release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: artifacts/*
