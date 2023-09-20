@@ -75,7 +75,7 @@ jobs:
 
       - name: Show files
         run: |
-          ls ${{ github.workspace }}/artifacts
+          ls ${{ github.workspace }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
