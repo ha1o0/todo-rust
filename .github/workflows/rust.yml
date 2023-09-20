@@ -58,31 +58,31 @@ jobs:
           mkdir archive
           cd archive
           if [ "${{ matrix.build }}" = "windows" ]; then
-            cp "../target/${{ matrix.target }}/release/todo.exe" ./
-            7z a "${{ matrix.archive-name }}" todo.exe
+            cp "../target/${{ matrix.target }}/release/todo.exe" "./${{ matrix.archive-name }}.exe"
           else
-            cp "../target/${{ matrix.target }}/release/todo" ./
-            tar -czf "${{ matrix.archive-name }}" todo
+            cp "../target/${{ matrix.target }}/release/todo" "./${{ matrix.archive-name }}"
           fi
+
       - name: Upload archive
         uses: actions/upload-artifact@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: ${{ matrix.archive-name }}
           path: archive/${{ matrix.archive-name }}
 
       - name: Show files
         run: |
           ls ${{ github.workspace }}/archive
 
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
+      - name: Download archive
+        uses: actions/download-artifact@v2
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ github.workspace }}/archive/${{ matrix.archive-name }}
-          tag: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          overwrite: false
-          file_glob: true
-          body: ""
+          path: archive/${{ matrix.archive-name }}
+
+      - name: Show Download files
+        run: |
+          ls archive
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: archive/${{ matrix.archive-name }}/*
