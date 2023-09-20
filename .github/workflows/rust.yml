@@ -79,7 +79,7 @@ jobs:
 
       - name: Show Download files
         run: |
-          ls archive
+          ls archive/artifact/
 
       - name: Release
         uses: softprops/action-gh-release@v1
