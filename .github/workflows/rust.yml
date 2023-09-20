@@ -62,7 +62,7 @@ jobs:
           mkdir archive
           cd archive
           if [ "${{ matrix.build }}" = "windows" ]; then
-            cp "../target/${{ matrix.target }}/release/todo.exe" "./${{ matrix.archive-name }}/"
+            cp "../target/${{ matrix.target }}/release/todo.exe" "./${{ matrix.archive-name }}.exe"
           else
             cp "../target/${{ matrix.target }}/release/todo" "./${{ matrix.archive-name }}"
           fi
@@ -70,7 +70,7 @@ jobs:
       - name: Upload archive
         uses: actions/upload-artifact@v2
         with:
-          path: archive/${{ matrix.archive-name }}
+          path: archive/${{ matrix.archive-name }}/
 
       - name: Show files
         run: |
