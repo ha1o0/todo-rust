@@ -75,7 +75,7 @@ jobs:
 
       - name: Show files
         run: |
-          ls ${{ github.workspace }}
+          ls ${{ github.workspace }}/archive
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -83,4 +83,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          files: artifacts/*
+          files: ${{ github.workspace }}/archive/*
