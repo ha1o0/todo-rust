@@ -56,14 +56,13 @@ jobs:
         shell: bash
         run: |
           mkdir archive
-          cp LICENSE archive/
           cd archive
           if [ "${{ matrix.build }}" = "windows" ]; then
             cp "../target/${{ matrix.target }}/release/todo.exe" ./
-            7z a "${{ matrix.archive-name }}" LICENSE todo.exe
+            7z a "${{ matrix.archive-name }}" todo.exe
           else
             cp "../target/${{ matrix.target }}/release/todo" ./
-            tar -czf "${{ matrix.archive-name }}" LICENSE todo
+            tar -czf "${{ matrix.archive-name }}" todo
           fi
       - name: Upload archive
         uses: actions/upload-artifact@v2
@@ -77,10 +76,13 @@ jobs:
         run: |
           ls ${{ github.workspace }}/archive
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          tag_name: ${{ github.ref }}
-          files: ${{ github.workspace }}/archive/*
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ github.workspace }}/archive/${{ matrix.archive-name }}
+          tag: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          overwrite: false
+          file_glob: true
+          body: ""
