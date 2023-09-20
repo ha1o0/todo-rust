@@ -22,17 +22,17 @@ jobs:
             os: ubuntu-latest
             rust: nightly
             target: x86_64-unknown-linux-musl
-            archive-name: todo-linux.tar.gz
+            archive-name: todo-linux
           - build: macos
             os: macos-latest
             rust: nightly
             target: x86_64-apple-darwin
-            archive-name: todo-macos.tar.gz
+            archive-name: todo-macos
           - build: windows
             os: windows-latest
             rust: nightly-x86_64-msvc
             target: x86_64-pc-windows-msvc
-            archive-name: todo-windows.7z
+            archive-name: todo-windows
       fail-fast: false
 
     steps:
