@@ -62,7 +62,7 @@ jobs:
           mkdir archive
           cd archive
           if [ "${{ matrix.build }}" = "windows" ]; then
-            cp "../target/${{ matrix.target }}/release/todo.exe" "./${{ matrix.archive-name }}"
+            cp "../target/${{ matrix.target }}/release/todo.exe" "./${{ matrix.archive-name }}/"
           else
             cp "../target/${{ matrix.target }}/release/todo" "./${{ matrix.archive-name }}"
           fi
