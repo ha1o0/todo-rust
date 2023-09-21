@@ -59,10 +59,12 @@ jobs:
       - name: Build archive
         shell: bash
         run: |
+          mkdir ${{ matrix.archive-name }}
+          cd ${{ matrix.archive-name }}
           if [ "${{ matrix.build }}" = "windows" ]; then
-            cp "../target/${{ matrix.target }}/release/todo.exe" "./${{ matrix.archive-name }}/"
+            cp "../target/${{ matrix.target }}/release/todo.exe" "./"
           else
-            cp "../target/${{ matrix.target }}/release/todo" "./${{ matrix.archive-name }}/"
+            cp "../target/${{ matrix.target }}/release/todo" "./"
           fi
 
       - name: Upload archive
