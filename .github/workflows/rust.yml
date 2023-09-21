@@ -65,7 +65,7 @@ jobs:
           if [ "${{ matrix.build }}" = "windows" ]; then
             cp "../target/${{ matrix.target }}/release/todo.exe" "./"
           else
-            cp "../target/${{ matrix.target }}/release/todo" "./"
+            cp "../target/${{ matrix.target }}/release/todo" "./${{ matrix.archive-name }}"
           fi
 
       - name: Upload archive
