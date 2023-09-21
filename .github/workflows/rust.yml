@@ -59,6 +59,7 @@ jobs:
       - name: Build archive
         shell: bash
         run: |
+          mkdir archive
           mkdir ${{ matrix.archive-name }}
           cd ${{ matrix.archive-name }}
           if [ "${{ matrix.build }}" = "windows" ]; then
@@ -74,7 +75,7 @@ jobs:
 
       - name: Show files
         run: |
-          ls ${{ github.workspace }}/archive
+          ls ${{ github.workspace }}/${{ matrix.archive-name }}
 
       - name: Download archive
         uses: actions/download-artifact@v2
