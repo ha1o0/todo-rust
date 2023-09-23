@@ -3,12 +3,12 @@ name: build
 permissions:
   contents: write
 
-# on:
-#   workflow_dispatch: {}
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch: {}
+# on:
+#   push:
+#     tags:
+#       - 'v*.*.*'
 
 jobs:
   build:
