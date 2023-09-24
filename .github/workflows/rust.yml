@@ -38,7 +38,7 @@ jobs:
             archive-name: todo-windows
           - build: linux-arm64
             os: self-hosted
-            rust: nightly
+            rust: 1.72.1
             target: aarch64-unknown-linux-musl
             archive-name: todo-linux-arm64
       fail-fast: false
