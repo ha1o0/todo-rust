@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        build: [linux, macos, windows]
+        build: [linux, macos, windows, linux-arm64]
         include:
           - build: linux
             os: ubuntu-latest
@@ -33,6 +33,11 @@ jobs:
             rust: nightly-x86_64-msvc
             target: x86_64-pc-windows-msvc
             archive-name: todo-windows
+          - build: linux-arm64
+            os: self-hosted
+            rust: nightly
+            target: aarch64-unknown-linux-musl
+            archive-name: todo-linux-arm64
       fail-fast: false
 
     steps:
