@@ -10,6 +10,9 @@ on:
     tags:
       - 'v*.*.*'
 
+env:
+  GITHUB_ACTIONS_RUNNER_FORCED_NODE_VERSION: '16'
+
 jobs:
   build:
     name: build
@@ -17,7 +20,6 @@ jobs:
     strategy:
       matrix:
         build: [linux, macos, windows, linux-arm64]
-        node-version: [16.x]
         include:
           - build: linux
             os: ubuntu-latest
