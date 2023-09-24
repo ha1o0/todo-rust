@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         build: [linux, macos, windows, linux-arm64]
-        node-version: [16.x, 16.x, 16.x, 16.x]
+        node-version: [16.x]
         include:
           - build: linux
             os: ubuntu-latest
