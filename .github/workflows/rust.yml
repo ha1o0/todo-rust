@@ -17,6 +17,7 @@ jobs:
     strategy:
       matrix:
         build: [linux, macos, windows, linux-arm64]
+        node-version: [16.x, 16.x, 16.x, 16.x]
         include:
           - build: linux
             os: ubuntu-latest
@@ -58,7 +59,7 @@ jobs:
           RUST_BACKTRACE: 1
 
       - name: Strip binary (linux and macos)
-        if: matrix.build == 'linux' || matrix.build == 'macos'
+        if: matrix.build == 'linux' || matrix.build == 'macos' || matrix.build == 'linux-arm64'
         run: strip "target/${{ matrix.target }}/release/todo"
 
       - name: Build archive
