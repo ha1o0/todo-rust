@@ -3,50 +3,36 @@ name: build
 permissions:
   contents: write
 
-on:
-  workflow_dispatch: {}
 # on:
-#   push:
-#     tags:
-#       - 'v*.*.*'
+#   workflow_dispatch: {}
+on:
+  push:
+    tags:
+      - 'v*.*.*'
 
-env:
-  GITHUB_ACTIONS_RUNNER_FORCED_NODE_VERSION: '16'
+# env:
+#   GITHUB_ACTIONS_RUNNER_FORCED_NODE_VERSION: '16'
 
 jobs:
   build:
     name: build
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        build: [linux, macos, windows]
+        build: [linux-aarch64]
         include:
-          - build: linux
+          - build: linux-aarch64
             os: ubuntu-latest
-            rust: nightly
-            target: x86_64-unknown-linux-musl
-            archive-name: todo-linux
-          - build: macos
-            os: macos-latest
-            rust: nightly
-            target: x86_64-apple-darwin
-            archive-name: todo-macos
-          - build: windows
-            os: windows-latest
-            rust: nightly-x86_64-msvc
-            target: x86_64-pc-windows-msvc
-            archive-name: todo-windows
-      fail-fast: false
-
+            target: aarch64-unknown-linux-gnu
+            archive-name: todo-linux-aarch64
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - name: Install Rust
-        if: matrix.build != 'linux-arm64'
+      - name: Install rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: ${{ matrix.rust }}
+          toolchain: stable
           profile: minimal
           override: true
           target: ${{ matrix.target }}
@@ -56,9 +42,8 @@ jobs:
         env:
           RUST_BACKTRACE: 1
 
-      - name: Strip binary (linux and macos)
-        if: matrix.build != 'windows'
-        run: strip "target/${{ matrix.target }}/release/todo"
+      # - name: Strip binary (linux and macos)
+      #   run: strip "target/${{ matrix.target }}/release/todo"
 
       - name: Build archive
         shell: bash
@@ -71,6 +56,7 @@ jobs:
           else
             cp "../target/${{ matrix.target }}/release/todo" "./${{ matrix.archive-name }}"
           fi
+
 
       - name: Upload archive
         uses: actions/upload-artifact@v2
