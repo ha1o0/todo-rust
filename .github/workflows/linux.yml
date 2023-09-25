@@ -37,13 +37,20 @@ jobs:
           override: true
           target: ${{ matrix.target }}
 
-      - name: Build binary
-        run: cargo build --verbose --release --target ${{ matrix.target }}
-        env:
-          RUST_BACKTRACE: 1
+      # - name: Build binary
+      #   run: cargo build --verbose --release --target ${{ matrix.target }}
+      #   env:
+      #     RUST_BACKTRACE: 1
 
       # - name: Strip binary (linux and macos)
       #   run: strip "target/${{ matrix.target }}/release/todo"
+
+      - name: Build target
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target ${{ matrix.target }}
 
       - name: Build archive
         shell: bash
