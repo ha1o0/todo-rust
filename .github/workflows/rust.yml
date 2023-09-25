@@ -57,7 +57,7 @@ jobs:
 
       - name: Build binary for aarch64
         if: matrix.build == 'linux-aarch64'
-        uses: actions-rs/cargo@v1
+        uses: actions-rs/cargo
         with:
           use-cross: true
           command: build
