@@ -28,6 +28,7 @@ jobs:
             archive-name: todo-linux
           - build: linux-aarch64
             os: ubuntu-latest
+            rust: nightly
             target: aarch64-unknown-linux-gnu
             archive-name: todo-linux-aarch64
           - build: macos
