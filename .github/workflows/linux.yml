@@ -37,13 +37,6 @@ jobs:
           override: true
           target: ${{ matrix.target }}
 
-      # - name: Build binary
-      #   run: cargo build --verbose --release --target ${{ matrix.target }}
-      #   env:
-      #     RUST_BACKTRACE: 1
-
-
-
       - name: Build target
         uses: actions-rs/cargo@v1
         with:
@@ -61,7 +54,6 @@ jobs:
             cp "../target/${{ matrix.target }}/release/todo.exe" "./"
           else
             cp "../target/${{ matrix.target }}/release/todo" "./${{ matrix.archive-name }}"
-            strip "./${{ matrix.archive-name }}"
           fi
 
       - name: Upload archive
