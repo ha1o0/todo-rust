@@ -51,9 +51,6 @@ jobs:
           command: build
           args: --release --target ${{ matrix.target }}
 
-      - name: Strip binary (linux and macos)
-        run: strip "target/${{ matrix.target }}/release/todo"
-
       - name: Build archive
         shell: bash
         run: |
@@ -64,8 +61,8 @@ jobs:
             cp "../target/${{ matrix.target }}/release/todo.exe" "./"
           else
             cp "../target/${{ matrix.target }}/release/todo" "./${{ matrix.archive-name }}"
+            strip "./${{ matrix.archive-name }}"
           fi
-
 
       - name: Upload archive
         uses: actions/upload-artifact@v2
